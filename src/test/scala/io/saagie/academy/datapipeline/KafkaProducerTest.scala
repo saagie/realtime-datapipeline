@@ -21,7 +21,7 @@ class KafkaProducerTest extends WordSpec with Matchers {
         assert(configuration.fold(false)(conf => conf.valueSerializer.isInstanceOf[Serializer[String]]))
       }
       s"bootstrap server should be ${Producer.broker}" in {
-        configuration.fold(false)(conf => conf.props.get(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG).contains(Producer.broker))
+        assert(configuration.fold(false)(conf => conf.props.get(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG).contains(Producer.broker)))
       }
     }
   }
