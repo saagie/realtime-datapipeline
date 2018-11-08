@@ -1,4 +1,4 @@
-package io.saagie.academy.datapipeline
+package io.saagie.academy.datapipeline.kafka
 
 import cakesolutions.kafka.KafkaProducer
 import cakesolutions.kafka.KafkaProducer.Conf
