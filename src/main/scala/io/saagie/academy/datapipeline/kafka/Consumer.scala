@@ -15,22 +15,17 @@ case object Consumer {
   def groupId = "group-1"
 
   def createConfiguration(): Option[Conf[String, String]] = {
-    val configuration = Some(Conf(
-      new StringDeserializer,
-      new StringDeserializer,
-      bootstrapServers = broker,
-      groupId))
+    val configuration = None
     configuration
   }
 
   def createConsumer(): Option[KafkaConsumer[String, String]] = {
-    val kafkaConsumer = Some(kafka.KafkaConsumer(Consumer.createConfiguration().get))
+    val kafkaConsumer = None
     kafkaConsumer
   }
 
   def consume(kafkaConsumer: Consumer[String, String]): Option[ConsumerRecords[String, String]] = {
     import scala.collection.JavaConverters._
-    kafkaConsumer.subscribe(Seq(Consumer.topic).asJava)
-    Some(kafkaConsumer.poll(Duration.ofSeconds(10)))
+    None
   }
 }
