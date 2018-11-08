@@ -14,23 +14,26 @@ case object Producer {
   def topic = "datapipeline-topic"
 
   def createConfiguration(): Option[Conf[String, String]] = {
-    val configuration = None
+    val configuration = Some(Conf(
+      new StringSerializer,
+      new StringSerializer,
+      bootstrapServers = broker))
     configuration
   }
 
   def createProducer(): Option[KafkaProducer[String, String]] = {
-    val kafkaProducer = None
+    val kafkaProducer = Some(KafkaProducer(Producer.createConfiguration().get))
     kafkaProducer
   }
 
   def createRecord(key: String, value: String): Option[ProducerRecord[String, String]] = {
-    val producerRecord = None
+    val producerRecord = Some(new ProducerRecord(topic, key, value))
     producerRecord
   }
 
   def sendRecord(producer: KafkaProducer[String, String]): Option[Future[RecordMetadata]] = {
     val record = Producer.createRecord("key", "value")
-    val metadata = None
+    val metadata = record.fold(Option.empty[Future[RecordMetadata]])(rec => Some(producer.send(rec)))
     metadata
   }
 }
