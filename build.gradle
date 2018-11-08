@@ -1,0 +1,43 @@
+plugins {
+    id 'scala'
+    id 'java'
+    id 'com.adarshr.test-logger' version '1.1.2'
+    id 'com.github.maiflai.scalatest' version '0.23'
+}
+
+group = "io.saagie.academy"
+version = "1.0.0-SNAPSHOT"
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+
+repositories {
+    jcenter()
+    maven {
+        url "https://dl.bintray.com/cakesolutions/maven/"
+    }
+}
+
+dependencies {
+    compile group: 'org.scala-lang', name: 'scala-library', version: "$scalaMajor.$scalaMinor"
+    compile group: 'org.scalactic', name: "scalactic_$scalaMajor", version: scalaTest
+
+    //logs
+    compile group: 'org.codehaus.groovy', name: 'groovy', version: groovy
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: logback
+
+    //Kafka
+    compile group: 'net.cakesolutions', name: "scala-kafka-client_$scalaMajor", version: kafkaClients
+    compile group: 'org.apache.kafka', name: 'kafka-clients', version: kafkaClients
+
+    //Generator
+    compile group: 'com.github.azakordonets', name: "fabricator_$scalaMajor", version: fabricator
+    compile group: 'org.json4s', name: "json4s-native_$scalaMajor", version: scala4s
+
+    //Test
+    testCompile group: 'org.scalatest', name: "scalatest_$scalaMajor", version: scalaTest
+    testCompile group: 'org.pegdown', name: 'pegdown', version: pegDown
+}
+
+test {
+    maxParallelForks = 1
+}
