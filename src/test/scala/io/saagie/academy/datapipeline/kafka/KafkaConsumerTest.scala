@@ -1,7 +1,5 @@
 package io.saagie.academy.datapipeline.kafka
 
-import cakesolutions.kafka
-import cakesolutions.kafka.KafkaConsumer
 import cakesolutions.kafka.KafkaConsumer.Conf
 import org.apache.kafka.clients.consumer._
 import org.apache.kafka.common.serialization.Deserializer
