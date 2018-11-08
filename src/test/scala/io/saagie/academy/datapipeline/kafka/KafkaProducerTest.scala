@@ -1,4 +1,4 @@
-package io.saagie.academy.datapipeline
+package io.saagie.academy.datapipeline.kafka
 
 import cakesolutions.kafka.KafkaProducer
 import cakesolutions.kafka.KafkaProducer.Conf
@@ -37,7 +37,7 @@ class KafkaProducerTest extends WordSpec with Matchers {
         assert(producer.fold(false)(prod => prod.isInstanceOf[KafkaProducer[String, String]]))
       }
     }
-    producer.foreach(p => p.close())
+    producer.foreach(_.close())
   }
 
   "Kafka producer record" when {
