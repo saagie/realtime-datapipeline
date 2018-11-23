@@ -65,10 +65,10 @@ case object Streaming {
   }
 
   def transformToMessage(stream: DStream[String]): DStream[Int] = {
-    Some(stream
+    stream
       .map(record => {
         stringToMessage(record)
       })
-      .map(_.text.split(" ").length))
+      .map(_.text.split(" ").length)
   }
 }
