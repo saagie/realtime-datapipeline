@@ -8,7 +8,7 @@ import org.apache.spark.streaming.dstream.{DStream, InputDStream}
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.streaming.kafka010.KafkaUtils
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
-import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.streaming.{Seconds, StreamingContext, kafka010}
 import org.json4s.DefaultFormats
 import org.json4s.native.Serialization.read
 
@@ -22,6 +22,8 @@ case object Streaming {
   def broker = "localhost:9092"
 
   def groupId = "group-1"
+
+  def topic = "tweet"
 
   def createConfiguration: Option[SparkConf] = {
     val conf = Some(new SparkConf()
@@ -50,11 +52,11 @@ case object Streaming {
   }
 
   def createKafkaDirectStream: Option[InputDStream[ConsumerRecord[String, String]]] = {
-    val subscription = Subscribe[String, String](Array("topic"), createKafkaConfiguration.get)
+    val subscription = createKafkaConfiguration.fold(Option.empty[kafka010.ConsumerStrategy[String, String]])(conf => Some(Subscribe[String, String](Array(topic), conf)))
     val stream = Some(KafkaUtils.createDirectStream[String, String](
       createStreamingContext.get,
       PreferConsistent,
-      subscription
+      subscription.get
     ))
     stream
   }
