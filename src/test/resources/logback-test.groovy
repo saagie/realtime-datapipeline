@@ -45,5 +45,7 @@ logger("org.spark_project.jetty", WARN)
 logger("org.elasticsearch.hadoop", WARN)
 logger("org.elasticsearch.spark", WARN)
 logger("org.apache.kafka", WARN)
+logger("org.apache.zookeeper", WARN)
+logger("com.holdenkarau.spark", WARN)
 
 root(DEBUG, ["console", "console-err"])
