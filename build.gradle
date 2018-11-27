@@ -38,13 +38,17 @@ dependencies {
 
     //Kafka
     compile group: 'net.cakesolutions', name: "scala-kafka-client_$scalaMajor", version: kafkaClients
+
+
     compile group: 'org.apache.kafka', name: 'kafka-clients', version: kafkaClients
+    compile group: 'org.apache.kafka', name: 'kafka-streams', version: kafkaClients
+    compile group: 'org.apache.kafka', name: "kafka-streams-scala_$scalaMajor", version: kafkaClients
 
     //Spark
-    compile group: 'org.apache.spark', name: "spark-core_$scalaMajor", version: spark
-    compile group: 'org.apache.spark', name: "spark-streaming_$scalaMajor", version: spark
+    compileOnly group: 'org.apache.spark', name: "spark-core_$scalaMajor", version: spark
+    compileOnly group: 'org.apache.spark', name: "spark-streaming_$scalaMajor", version: spark
+    compileOnly group: 'org.apache.spark', name: "spark-sql_$scalaMajor", version: spark
     compile group: 'org.apache.spark', name: "spark-streaming-kafka-0-10_$scalaMajor", version: spark
-    compile group: 'org.apache.spark', name: "spark-sql_$scalaMajor", version: spark
     compile group: 'org.apache.spark', name: "spark-sql-kafka-0-10_$scalaMajor", version: spark
 
     //Generator
@@ -60,4 +64,14 @@ dependencies {
 
 test {
     maxParallelForks = 1
+}
+
+ext.mainClassName = 'io.saagie.academy.datapipeline.kafka.streams.StreamConsumer'
+
+shadowJar {
+    zip64 = true
+    classifier = ""
+    manifest {
+        attributes "Main-Class": mainClassName
+    }
 }

@@ -9,7 +9,7 @@ import org.apache.spark.sql.types.{IntegerType, LongType}
 import org.json4s.DefaultFormats
 
 case object Generator extends App {
-  def broker = "localhost:9092"
+  def broker = "dq1:31200"
 
   def topic = "tweet"
 
@@ -17,35 +17,33 @@ case object Generator extends App {
 
   val spark = SparkSession
     .builder()
-    .appName("Data Generator.")
     .master("local[*]")
+    .appName("Data Generator.")
     .getOrCreate()
+
+  spark
+    .sparkContext
+    .setLogLevel("ERROR")
 
   import spark.implicits._
 
-  val df = spark
-    .read
-    .option("header", "true")
-    .csv("training.1600000.processed.noemoticon.utf8.csv")
-    .drop($"_c0")
-    .withColumn("sentiment", $"sentiment" cast IntegerType)
-    .withColumn("ids", $"ids" cast LongType)
-    .as[Message]
+  def toJson(r: Message): String = {
+    implicit val formats: DefaultFormats.type = DefaultFormats
+    import org.json4s.jackson.Serialization.write
+    write(r)
+  }
 
-  import org.json4s.native.Serialization.write
-
-  implicit val formats: DefaultFormats.type = DefaultFormats
   while (true) {
     spark
       .read
       .option("header", "true")
-      .csv("training.1600000.processed.noemoticon.utf8.csv")
+      .csv("hdfs://cluster/user/academy/realtime-datapipeline/training.1600000.processed.noemoticon.utf8.csv")
       .drop($"_c0")
       .withColumn("sentiment", $"sentiment" cast IntegerType)
       .withColumn("ids", $"ids" cast LongType)
       .as[Message]
       .foreach(r => {
-        producer.send(KafkaProducerRecord(topic, r.ids: java.lang.Long, write(r)))
+        producer.send(KafkaProducerRecord(topic, r.ids: java.lang.Long, toJson(r)))
         Thread.sleep(1000)
       })
   }

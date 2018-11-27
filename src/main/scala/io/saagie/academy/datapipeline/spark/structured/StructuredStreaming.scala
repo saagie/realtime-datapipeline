@@ -3,18 +3,16 @@ package io.saagie.academy.datapipeline.spark.structured
 import io.saagie.academy.datapipeline.Message
 import org.apache.spark.sql.{Dataset, Encoders, SparkSession}
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types.StringType
 
-case object StructuredStreaming {
+case object StructuredStreaming extends App {
   def appName = "StructuredStreaming"
 
-  def master = "local[*]"
-
-  def broker = "localhost:9092"
+  def broker = "dq1:31200"
 
   def createSession: Option[SparkSession] = {
     val spark = Some(SparkSession.builder()
       .appName(appName)
-      .master(master)
       .getOrCreate())
     spark
   }
@@ -25,10 +23,11 @@ case object StructuredStreaming {
       .readStream
       .format("kafka")
       .option("bootstrap.servers", broker)
-      .option("subscribe", "topic")
+      .option("subscribe", "tweet")
       .load()
-      .select(from_json($"value", Encoders.product[Message].schema) as "value")
-      .select($"value.*")
+      .select($"value" cast StringType as "stringvalue")
+      .select(from_json($"stringvalue", Encoders.product[Message].schema) as "v")
+      .select($"v.*")
       .as[Message])
     ds
   }
@@ -37,4 +36,5 @@ case object StructuredStreaming {
     import df.sparkSession.implicits._
     Some(df.select(count(split($"text", " "))).as[Long])
   }
+
 }
